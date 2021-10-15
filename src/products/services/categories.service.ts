@@ -17,7 +17,9 @@ export class CategoriesService {
   }
 
   async findOne(id: number) {
-    const categories = await this.categoryRepo.findOne( id );
+    const categories = await this.categoryRepo.findOne( id, {
+      relations: ['products']
+    } );
 
     if (!categories) {
       throw new NotFoundException(`Category #${id} not found`);
@@ -32,7 +34,7 @@ export class CategoriesService {
     return this.categoryRepo.save( category );
   }
 
-  async update(id: number, changes: UpdateCategoryDto) {
+  async update( id: number, changes: UpdateCategoryDto ): Promise<Category> {
     const category = await this.categoryRepo.findOne( id );
 
     this.categoryRepo.merge( category, changes );
